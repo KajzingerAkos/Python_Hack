@@ -10,8 +10,6 @@ parser.add_argument('port_range',type=str ,action='store', help = 'specify the p
 parser.add_argument('-t', '--timeout', type=float, action='store', help='set the timeout, default: 0.5 (the bigger the timeout the more precise the scan will be)')
 args = parser.parse_args()
 
-isDomainName= 0
-
 # Validate domain names or ips
 def check_ip(ip):
     try:
