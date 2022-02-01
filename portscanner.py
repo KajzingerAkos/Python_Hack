@@ -57,15 +57,15 @@ class PortScanner():
                         sock = socket.socket()
                         sock.settimeout(float(self.timeout))
                         sock.connect((self.check_ip(ips),port))
-                        print(f"[+] Port {port} is open")
-                        self.ports.append(port)
+                        self.open_ports.append(port)
                         try:
                             banner = sock.recv(1024).decode.strip('\n').strip('\r')
                             self.banners.append(banner)
+                            print("Port {port} is open service {banner}")
                         except:
-                            self.banners.append(' ')
+                            print(f"[+] Port {port} is open")
                     except:
-                        pass
+                        self.banners.append(' ')
 
         else:
             print(f"[+] Scanning...")
@@ -75,16 +75,15 @@ class PortScanner():
                     sock = socket.socket()
                     sock.settimeout(float(self.timeout))
                     sock.connect((self.check_ip(),port))
-                    print(f"[+] Port {port} is open")
-                    self.ports.append(port)
+                    self.open_ports.append(port)
                     try:
-                        banner = sock.recv(1024).decode.strip('\n').strip('\n')
+                        banner = sock.recv(1024).decode.strip('\n').strip('\r')
                         self.banners.append(banner)
+                        print("Port {port} is open service {banner}")
                     except:
-                        self.banners.append(' ')
+                        print(f"[+] Port {port} is open")
                 except:
-                    pass
-        
+                    self.banners.append(' ')
 if __name__ == '__main__':
     print("Port scanner by Kajzinger Ákos, happy hacking :)")
     # Arguments
