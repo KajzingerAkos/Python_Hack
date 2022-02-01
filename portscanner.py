@@ -76,7 +76,7 @@ def scan():
                 except:
                     pass
         
-#if __name__ == '__main__':
-    #print("Port scanner by Kajzinger Ákos, happy hacking :)\n")
-ports()
-scan()
+if __name__ == '__main__':
+    print("Port scanner by Kajzinger Ákos, happy hacking :)\n")
+    ports()
+    scan()
