@@ -7,9 +7,10 @@ def vulnscan(vuln_file):
     with open(str(vuln_file)) as file:
         lines = file.readlines()
     for vuln_soft in lines:
+        stripped = vuln_soft.strip('\n')
         for response in scan_ports.banners:
             count += 1
-            if vuln_soft == response:
+            if stripped == response:
                 vulns += 1
                 print(f"[+] Port {scan_ports.open_ports[count]} is VULNERABLE!!\nService: {vuln_soft}")
     if vulns == 0:
