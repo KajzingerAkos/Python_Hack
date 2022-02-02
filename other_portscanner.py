@@ -3,14 +3,15 @@ import argparse
 from IPy import IP
 import socket
 
-banners = []
-open_ports = []
-
 class PortScanner():
 
-    def __init__(self, ipaddress,):
+    target = []
+    banners = []
+    open_ports = []
+
+    def __init__(self, ipaddress,port_range):
         self.ipaddress = ipaddress
-        #self.port_range = port_range
+        self.port_range = port_range
 
     def check_ip(self,ipaddress):
         try:
@@ -38,31 +39,37 @@ class PortScanner():
         return minMaxPort
 
 
-    def scan(ipaddress):
-        for port in range(1,100):
-            try:
-                sock = socket.socket()
-                sock.settimeout(0.5)
-                sock.connect((ipaddress,port))
-                open_ports.append(int(port))
+    def scan(self):
+        self.ports()
+        minPort = int(self.ports()[0])
+        maxPort = int(self.ports()[1])
+        if ',' in self.ipaddress:
+            self.targtes = self.ipaddress.split(',')
+        else:
+            self.targtes.append(self.ipaddress)
+        for ips in self.targtes:
+            for port in range(minPort,maxPort + 1):
                 try:
-                    banner = sock.recv(1024).decode().strip('\n').strip('\r')
-                    banners.append(banner)
-                    print("Port {port} is open service {banner}")
+                    sock = socket.socket()
+                    sock.settimeout(0.5)
+                    sock.connect((ips,port))
+                    self.open_ports.append(int(port))
+                    try:
+                        banner = sock.recv(1024).decode().strip('\n').strip('\r')
+                        self.banners.append(banner)
+                        print(f"Port {port} is open service {banner}")
+                    except:
+                        print(f"Port {port} is open")
                 except:
-                    print(f"Port {port} is open")
-            except:
-                print(f"[-] Port {port} is closed")
-                banners.append(" ")
-        print(banners)
-        print(open_ports)
+                    print(f"[-] Port {port} is closed")
+                    self.banners.append(" ")
 
 if __name__ == '__main__':
     print("Port scanner by Kajzinger Ákos, happy hacking :)")
     # Arguments
     parser = argparse.ArgumentParser(description='Port scanner')
     parser.add_argument('target', type=str ,action='store', help='specify the target(s) domain name(s) or IP address(es)')
-    #parser.add_argument('port_range',type=str ,action='store', help = 'specify the port range')
+    parser.add_argument('port_range',type=str ,action='store', help = 'specify the port range')
     parser.add_argument('-t', '--timeout', type=float, action='store', help='set the timeout, default: 0.5 (the bigger the timeout the more precise the scan will be)')
     args = parser.parse_args()
     # Timeout
