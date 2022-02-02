@@ -5,15 +5,16 @@ import socket
 
 class PortScanner():
 
+    timeout = 0.5
     target = []
     banners = []
-    open_ports = []
+    scanned_ports = []
 
     def __init__(self, ipaddress,port_range):
         self.ipaddress = ipaddress
         self.port_range = port_range
 
-    def check_ip(self,ipaddress):
+    def check_ip(self):
         try:
             IP(self.ipaddress)
         except ValueError:
@@ -23,7 +24,7 @@ class PortScanner():
     
     def ports(self):
         try:
-            minMaxPort = self.portrange.split("-")
+            minMaxPort = self.port_range.split("-")
             minPort = int(minMaxPort[0])
             maxPort = int(minMaxPort[1])
             if minPort < 1 and minPort > 65534 and minPort > maxPort:
@@ -44,16 +45,16 @@ class PortScanner():
         minPort = int(self.ports()[0])
         maxPort = int(self.ports()[1])
         if ',' in self.ipaddress:
-            self.targtes = self.ipaddress.split(',')
+            self.target = self.ipaddress.split(',')
         else:
-            self.targtes.append(self.ipaddress)
-        for ips in self.targtes:
+            self.target.append(self.ipaddress)
+        for ips in self.target:
             for port in range(minPort,maxPort + 1):
+                self.scanned_ports.append(port)
                 try:
                     sock = socket.socket()
-                    sock.settimeout(0.5)
+                    sock.settimeout(self.timeout)
                     sock.connect((ips,port))
-                    self.open_ports.append(int(port))
                     try:
                         banner = sock.recv(1024).decode().strip('\n').strip('\r')
                         self.banners.append(banner)
@@ -61,7 +62,6 @@ class PortScanner():
                     except:
                         print(f"Port {port} is open")
                 except:
-                    print(f"[-] Port {port} is closed")
                     self.banners.append(" ")
 
 if __name__ == '__main__':
@@ -77,6 +77,5 @@ if __name__ == '__main__':
         timeout = args.timeout
     else:
         timeout = 0.5
-    
     scan_ports = PortScanner(args.target, args.port_range)
     scan_ports.scan()
