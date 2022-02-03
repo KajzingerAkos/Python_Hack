@@ -1,3 +1,6 @@
+
+#SSH bruteforcer
+
 import paramiko
 import socket
 from colorama import init, Fore
